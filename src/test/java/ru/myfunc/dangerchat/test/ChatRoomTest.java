@@ -5,6 +5,8 @@ import ru.myfunc.dangerchat.ChatRoom;
 import ru.myfunc.dangerchat.events.*;
 import ru.myfunc.dangerchat.model.Message;
 import ru.myfunc.dangerchat.model.User;
+import ru.myfunc.dangerchat.plugin.Plugin;
+import ru.myfunc.dangerchat.plugin.PluginEffect;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -77,8 +79,68 @@ public class ChatRoomTest {
     }
 
     @Test
-    public void messageSendsTest() {
-        int a = 10;
-        assertEquals(a, 10);
+    public void messageSendEventTest() {
+        var chatRoom = new ChatRoom();
+        var messageSendListener = mock(MessageSendListener.class);
+        chatRoom.onMessageSend(messageSendListener);
+        chatRoom.sendMessage(new Message());
+        chatRoom.sendMessage(new Message());
+        chatRoom.sendMessage(new Message());
+
+        verify(messageSendListener, times(3)).handle(any(), any());
+    }
+
+    @Test
+    public void pluginHandleSendMessageTest() {
+        var chatRoom = new ChatRoom();
+        var pluginOne = mock(Plugin.class);
+        var pluginTwo = mock(Plugin.class);
+        chatRoom.addPlugin(pluginOne);
+        chatRoom.sendMessage(new Message());
+        chatRoom.addPlugin(pluginTwo);
+
+        verify(pluginOne, times(1)).messageSend(any(), any(), any());
+        verify(pluginTwo, times(0)).messageSend(any(), any(), any());
+    }
+
+    @Test
+    public void pluginSideEffectSendMessageTest() {
+        var chatRoom = new ChatRoom();
+        var textPlugin = new Plugin() {
+            @Override public void userJoin(ChatRoom room, PluginEffect pluginEffect, User user) {}
+            @Override public void userLeft(ChatRoom room, PluginEffect pluginEffect, User user) {}
+            @Override
+            public void messageSend(ChatRoom room, PluginEffect pluginEffect, Message message) {
+                message.setText(message.getText() + "+");
+            }
+        };
+        chatRoom.addPlugin(textPlugin);
+        var testMessage = new Message();
+        testMessage.setText("test");
+        chatRoom.sendMessage(testMessage);
+
+        String textOfLast = chatRoom.getMessages().getLast().getText();
+        assertEquals("test+", textOfLast);
+    }
+
+    @Test
+    public void pluginPreventEffectSendMessageTest() {
+        var chatRoom = new ChatRoom();
+        var textPlugin = new Plugin() {
+            private int count = 0;
+            @Override public void userJoin(ChatRoom room, PluginEffect pluginEffect, User user) {}
+            @Override public void userLeft(ChatRoom room, PluginEffect pluginEffect, User user) {}
+            @Override
+            public void messageSend(ChatRoom room, PluginEffect pluginEffect, Message message) {
+                pluginEffect.setPreventAction(count++ < 2);
+            }
+        };
+        chatRoom.addPlugin(textPlugin);
+        chatRoom.sendMessage(new Message());
+        chatRoom.sendMessage(new Message());
+        chatRoom.sendMessage(new Message());
+        chatRoom.sendMessage(new Message());
+
+        assertEquals(2, chatRoom.getMessages().size());
     }
 }

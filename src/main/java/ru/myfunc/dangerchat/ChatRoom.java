@@ -7,7 +7,6 @@ import ru.myfunc.dangerchat.model.*;
 import ru.myfunc.dangerchat.plugin.Plugin;
 import ru.myfunc.dangerchat.plugin.PluginEffect;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 
 public class ChatRoom {
@@ -15,9 +14,9 @@ public class ChatRoom {
     private LinkedList<Plugin> plugins = new LinkedList<Plugin>();
     private LinkedList<User> users = new LinkedList<User>();
 
-    private HashSet<UserJoinListener> userJoinListeners = new HashSet<>();
-    private HashSet<UserLeftListener> userLeftListeners = new HashSet<>();
-    private HashSet<MessageSendListener> messageSendListeners = new HashSet<>();
+    private LinkedList<UserJoinListener> userJoinListeners = new LinkedList<>();
+    private LinkedList<UserLeftListener> userLeftListeners = new LinkedList<>();
+    private LinkedList<MessageSendListener> messageSendListeners = new LinkedList<>();
 
     public LinkedList<Message> getMessages() {
         return messages;
@@ -25,6 +24,10 @@ public class ChatRoom {
 
     public LinkedList<Plugin> getPlugins() {
         return plugins;
+    }
+
+    public void addPlugin(Plugin plugin) {
+        this.plugins.add(plugin);
     }
 
     public LinkedList<User> getUsers() {
