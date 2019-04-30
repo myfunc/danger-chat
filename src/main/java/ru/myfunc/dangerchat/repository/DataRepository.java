@@ -1,3 +1,5 @@
+package ru.myfunc.dangerchat.repository;
+
 import java.sql.*;
 
 public class DataRepository {
