@@ -107,8 +107,6 @@ public class ChatRoomTest {
     public void pluginSideEffectSendMessageTest() {
         var chatRoom = new ChatRoom();
         var textPlugin = new Plugin() {
-            @Override public void userJoin(ChatRoom room, PluginEffect pluginEffect, User user) {}
-            @Override public void userLeft(ChatRoom room, PluginEffect pluginEffect, User user) {}
             @Override
             public void messageSend(ChatRoom room, PluginEffect pluginEffect, Message message) {
                 message.setText(message.getText() + "+");
@@ -128,8 +126,6 @@ public class ChatRoomTest {
         var chatRoom = new ChatRoom();
         var textPlugin = new Plugin() {
             private int count = 0;
-            @Override public void userJoin(ChatRoom room, PluginEffect pluginEffect, User user) {}
-            @Override public void userLeft(ChatRoom room, PluginEffect pluginEffect, User user) {}
             @Override
             public void messageSend(ChatRoom room, PluginEffect pluginEffect, Message message) {
                 pluginEffect.setPreventAction(count++ < 2);

@@ -1,5 +1,7 @@
 package ru.myfunc.dangerchat.model;
 
+import ru.myfunc.dangerchat.ChatRoom;
+
 import java.util.LinkedList;
 import java.util.Objects;
 
@@ -7,7 +9,9 @@ public class User {
     private int id;
     private String name;
     private String password;
-    private boolean isAnonimous;
+    private boolean isAnonymous;
+
+    private LinkedList<ChatRoom> rooms = new LinkedList<>();
 
     private LinkedList<String> tags = new LinkedList<String>();
 
@@ -16,7 +20,7 @@ public class User {
     public User(int id, String name) {
         this.id = id;
         this.name = name;
-        isAnonimous = true;
+        isAnonymous = true;
     }
 
     public int getId() {
@@ -47,12 +51,16 @@ public class User {
         return tags;
     }
 
-    public boolean isAnonimous() {
-        return isAnonimous;
+    public boolean isAnonymous() {
+        return isAnonymous;
     }
 
-    public void setAnonimous(boolean anonimous) {
-        isAnonimous = anonimous;
+    public void setAnonymous(boolean anonymous) {
+        isAnonymous = anonymous;
+    }
+
+    public LinkedList<ChatRoom> getRooms() {
+        return rooms;
     }
 
     @Override
